@@ -43,7 +43,7 @@ app.post('/auth', function(request, response) {
 			if (results.length > 0) {
 				request.session.loggedin = true;
 				request.session.username = username;
-				response.redirect('/goHome');
+				response.redirect('/index');
 			} else {
 			}			
 			response.end();
@@ -53,7 +53,7 @@ app.post('/auth', function(request, response) {
 	}
 });
 
-app.post('/register', function(request, response) {
+app.post('/test', function(request, response) {
 	var username = request.body.username;
 	var email = request.body.email;
 	var fname = request.body.firstName;
@@ -62,22 +62,43 @@ app.post('/register', function(request, response) {
 	var confirmpassword = request.body.confirmpassword;
 
 	var VALUES = [null, username, password, Date.now(), fname, lname, null, email, null];
-	var sql = "INSERT INTO user (ID, USERNAME, EMAIL, FIRST_NAME, LAST_NAME, PASSWORD, SCHOOL_ID) VALUES ?";
-	con.query(sql, [VALUES], function(error, result) {
+	var sql = "INSERT INTO customers (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES ('99999', 'TESTUSER', 'password', '2019-04-09T19:46:08.000Z', 'TESTUSER', 'TESTUSER', '1996-01-01T07:00:00.000Z', 'test@gmail.com, '9999')";
+	con.query(sql, function(error, result) {
 		console.log(result);
 	});
+});
+
+app.post('/register', function(err) {
+  if (err) throw err;
+  var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID, TYPE) VALUES ('99999', 'TESTUSER', 'password', '2019-04-09T19:46:08.000Z', 'TESTUSER', 'TESTUSER', '1996-01-01T07:00:00.000Z', 'test@gmail.com, '9999', 'T')";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
 });
 
 app.get('/goLogin', function(request, response) {
 	response.sendFile(path.join(__dirname + '/login.html'));
 });
 
-app.get('/goHome', function(request, response) {
+app.get('/index', function(request, response) {
 	response.sendFile(path.join(__dirname + '/index.html'));
 });
 
 app.get('/register', function(request, response) {
 	response.sendFile(path.join(__dirname + '/register.html'));
+});
+
+app.get('/available', function(request, response) {
+	response.sendFile(path.join(__dirname + '/available.html'));
+});
+
+app.get('/previous', function(request, response) {
+	response.sendFile(path.join(__dirname + '/previous.html'));
+});
+
+app.get('/logout', function(request, response) {
+	response.sendFile(path.join(__dirname + '/'));
 });
 
 app.listen(3000, function() {
