@@ -4,6 +4,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
+let io = require('socket.io')(http);
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,6 +31,10 @@ con.connect(function(err) {
   });
 });
 
+app.post('/test', function(request, response) {
+	console.log("test")
+});
+
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname + '/login.html'));
 });
@@ -40,18 +45,19 @@ app.post('/auth', function(request, response) {
 
 	if (username && password) {
 		con.query('SELECT * FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
-			if (results.length > 0) {
-				request.session.loggedin = true;
-				request.session.username = username;
-				response.redirect('/goHome');
-			} else {
-			}			
-			response.end();
+		if (results.length > 0) {
+			console.log(results)
+			request.session.loggedin = true;
+			request.session.username = username;
+			response.redirect('/goHome');
+		}
+		con.query("SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = ?", [results[0].ID], function(error1, results1, fields1){
+			console.log(results1[0].courseCount)
+			});
 		});
-	} else {
-		response.end();
 	}
 });
+			
 
 app.post('/register', function(request, response) {
 	var username = request.body.username;
@@ -63,9 +69,13 @@ app.post('/register', function(request, response) {
 
 	var VALUES = [null, username, password, null, fname, lname, null, email, null];
 	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES (?)";
+	if (username && email && fname && lname && (password === confirmpassword)) {
 	con.query(sql, [VALUES], function(error, result) {
-		console.log(result);
+		response.redirect('/goLogin');
 	});
+	} else {
+		console.log("Please fill all fields correctly");
+	}
 });
 
 app.get('/goLogin', function(request, response) {
