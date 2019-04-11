@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
 var userID;
+var userType;
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, "./public/")));
@@ -41,15 +42,18 @@ app.post('/auth', function(request, response) {
 	var password = request.body.password;
 
 	if (username && password) {
-		con.query('SELECT ID FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
+		con.query('SELECT * FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
 				console.log("USER INFO");
-				console.log(results[0].ID);
+				console.log(results);
 				userID = results[0].ID;
+				userType = results[0].TYPE;
+				console.log("USER TYPE ------------> " + userType);
 				request.session.loggedin = true;
 				request.session.username = username;
 				response.redirect('/index');
 			}
+		
 	
 			response.end();
 		});
@@ -175,6 +179,12 @@ app.get('/getAllSessions', function(req, res) {
 		data = results1;
 		res.send({data})
 	});
+});
+
+app.get('/getType', function(req, res) {
+	var data = userType;
+	console.log("Sending type " + userType);
+	res.send({data})
 });
 
 app.get('/goLogin', function(request, response) {
