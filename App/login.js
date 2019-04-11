@@ -97,30 +97,14 @@ app.get('/countCurrent', function(req, res) {
 	
 });
 
-app.get('/getRating', function(req, res) {
-	var data;
-	con.query('SELECT AVG(rating_val) AS avgRating from rating where id = ?;',[userID], function(error1, results1, fields1){
-		if (error1) {
-			console.log("THERE IS AN ERROR");
-			console.log(error1);
-		}
-		console.log("AVG RATING VVVVVV");
-		console.log(results1[0]);
-		data = results1([0]);
-		res.send({data})
-	});
-	
-});
-
 app.get('/getCurrentCourses', function(req, res) {
 	var data;
 	console.log(userID);
-	con.query('SELECT CONCAT(u.first_name, " ", u.last_name), c.course_name, c.location, t.rate_hr, c.schedule FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN course c ON c.course_id = s.service_id INNER JOIN enrolled e on e.service_id = s.service_id where e.customer_id = ?', [userID], function(error1, results1, fields1){
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) AS tutorName, c.course_name, c.location, t.rate_hr, c.schedule, c.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN course c ON c.course_id = s.service_id INNER JOIN enrolled e on e.service_id = s.service_id where e.customer_id = ?', [userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log("THERE IS AN ERROR");
 			console.log(error1);
-		}
-		console.log("HI DANNY");
+		}	
 		console.log(results1);
 		data = results1;
 		console.log(data);
