@@ -6,6 +6,28 @@
 <script type = "text/javascript">
 
 $(document).ready(() => {
+
+	$.ajax({
+		url: 'http://localhost:3000/getType',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data){
+			console.log("USER TYPE IS" + data);
+			if(data.data === 'T'){
+				console.log("I am a tutor");
+				$("#currentlyDoing").html("Currently teaching: ");
+				$("#coursesTab").html("Manage courses");
+				$("#enrolledCourses").html("Courses you are currently teaching");
+				$("#bookings").html("Sessions you are currently booked for");
+				$("#seminars").html("Seminars you are holding");
+			}
+    },
+		error: function(request, status){
+			console.log("HELLO");
+			console.log(request);
+		}
+  });
+  
 	$.ajax({
 		url: 'http://localhost:3000/getCurrentCourses',
 		type: 'GET',
@@ -149,7 +171,9 @@ $(document).ready(() => {
       <li class="nav-item">
         <a class="nav-link" href="available">
           <i class="fas fa-fw fa-table"></i>
-          <span>Available Courses</span></a>
+          <span id="coursesTab">
+			Available Courses
+		  </span></a>
       </li>
 
       <!-- Nav Item - Tables -->
@@ -200,7 +224,11 @@ $(document).ready(() => {
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Currently Enrolled In:</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+						<p id = "currentlyDoing">
+						Currently Enrolled In:
+						</p>
+					  </div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">
                         <p id = "courseCt"> X</p>
                       </div>
@@ -239,7 +267,11 @@ $(document).ready(() => {
 		<!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Courses you are Enrolled In:</h6>
+              <h6 class="m-0 font-weight-bold text-primary">
+			  <p id = 'enrolledCourses'>
+			  Courses you are Enrolled In:
+			  </p>
+			  </h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -260,7 +292,11 @@ $(document).ready(() => {
           </div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Seminars you are Enrolled In:</h6>
+              <h6 class="m-0 font-weight-bold text-primary">
+				<p id = 'seminars'>
+				Seminars you are Enrolled In:
+				</p>
+				</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -281,7 +317,11 @@ $(document).ready(() => {
           </div>
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Sessions you are Enrolled In:</h6>
+              <h6 class="m-0 font-weight-bold text-primary">
+				<p id = 'bookings'>
+				Sessions you are Enrolled In:
+				</p>
+			  </h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
