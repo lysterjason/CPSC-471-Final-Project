@@ -105,8 +105,8 @@ app.get('/getRating', function(req, res) {
 			console.log(error1);
 		}
 		console.log("AVG RATING VVVVVV");
-		console.log(results1[0]);
-		data = results1([0]);
+		console.log(results1[0].avgRating);
+		data = results1[0].avgRating;
 		res.send({data})
 	});
 	
@@ -121,9 +121,9 @@ app.get('/getCurrentCourses', function(req, res) {
 			console.log(error1);
 		}
 		console.log("HI DANNY");
-		console.log(results1);
+		//console.log(results1);
 		data = results1;
-		console.log(data);
+		//console.log(data);
 		res.send({data})
 	});
 });
