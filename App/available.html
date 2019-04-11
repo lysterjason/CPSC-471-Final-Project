@@ -32,7 +32,7 @@
         console.log('ajax success');
         console.log(data);
         data.data.forEach(seminar => {
-          $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td>Enroll</td></tr>');
+          $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td>Enroll</td></tr>');
         });
       },
       error: function(request, status){
@@ -216,13 +216,13 @@
                       <th>Price</th>
                       <th>Date and Time</th>
                       <th>Duration</th>
+                      <th>Enroll</th>
                     </tr>
                   </thead>
                 </table>
               </div>
             </div>
           </div>
-
 
         </div>
         <!-- /.container-fluid -->
@@ -245,64 +245,11 @@
 
   </div>
   <!-- End of Page Wrapper -->
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered" role="document"><
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Course Details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-sm-4">Tutor Name</div>
-            <div class="col-sm-8">Tutor Name</div>
-            <div class="col-sm-4">Course Taught</div>
-            <div class="col-sm-8">CPSC 471</div>
-            <div class="col-sm-4">Location</div>
-            <div class="col-sm-8">University of Calgary</div>
-            <div class="col-sm-4">Date</div>
-            <div class="col-sm-8">2019/03/21</div>
-            <div class="col-sm-4">Rate</div>
-            <div class="col-sm-8">$25 per hour</div>
-          </div>  
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Enroll</button>
-        </div>
-      </div>
-    </div>
-  </div>
   
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>

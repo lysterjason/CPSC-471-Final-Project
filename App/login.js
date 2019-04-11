@@ -87,10 +87,17 @@ app.post('/register', function(request, response) {
 	var lname = request.body.lastName;
 	var password = request.body.password;
 	var confirmpassword = request.body.confirmpassword;
+	var birthday = request.body.bday;
+	var type = request.body.type;
+	if (type === "on") {
+		type = "T";
+	} else {
+		type = "C";
+	}
 
-	var VALUES = [null, username, password, null, fname, lname, null, email, null];
-	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES (?)";
-	if (username && email && fname && lname && (password === confirmpassword)) {
+	var VALUES = [null, username, password, null, fname, lname, birthday, email, null, type];
+	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID, TYPE) VALUES (?)";
+	if (username && email && fname && lname && birthday && type && (password === confirmpassword)) {
 	con.query(sql, [VALUES], function(error, result) {
 		response.redirect('/goLogin');
 	});
