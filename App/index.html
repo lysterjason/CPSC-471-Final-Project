@@ -12,7 +12,6 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log("USER TYPE IS" + data);
 			if(data.data === 'T'){
 				console.log("I am a tutor");
 				$("#currentlyDoing").html("Currently teaching: ");
@@ -38,9 +37,7 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('ajax success');
-      console.log(data);
-      data.data.forEach(course => {
+		data.data.forEach(course => {
          console.log(course.course_name);
          $('#dataTable').append('<tr><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td></tr>');
         });
@@ -55,9 +52,7 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('ajax success');
-      console.log(data);
-      data.data.forEach(seminar => {
+		data.data.forEach(seminar => {
          $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td></tr>');
         });
     },
@@ -71,9 +66,7 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('ajax success');
-      console.log(data);
-      data.data.forEach(session => {
+		data.data.forEach(session => {
          $('#dataTable3').append('<tr><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td></tr>');
         });
     },
@@ -87,8 +80,6 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('Current rating');
-			console.log(data.data);
 			var str = data.data.toString();
 			var rounded = str.substring(0,4);
 			$("#ratingVal").html(rounded + "/5");
@@ -105,8 +96,6 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('Current course count');
-			console.log(data.data);
 			$("#courseCt").html(data.data + " Courses");
 
 		},
@@ -150,7 +139,7 @@ $(document).ready(() => {
         <div class="sidebar-brand-icon">
           <i class="fas fa-school"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">SmartBook</div>
+        <div href = 'index' class="sidebar-brand-text mx-3">SmartBook</div>
       </a>
 
       <!-- Divider -->
@@ -314,7 +303,7 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
-		  <a href="seminar" id = 'createSButton' class="btn btn-primary mb-4" role="button">Create Seminar</a>
+		  <a href="addSeminar" id = 'createSButton' class="btn btn-primary mb-4" role="button">Create Seminar</a>
 		  
           <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -341,7 +330,7 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
-		  <a href="session" id = 'createSEButton' class="btn btn-primary mb-4" role="button">Create Session</a>
+		  <a href="addSession" id = 'createSEButton' class="btn btn-primary mb-4" role="button">Create Session</a>
       </div>
       <!-- End of Main Content -->
 

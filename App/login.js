@@ -53,8 +53,6 @@ app.post('/auth', function(request, response) {
 				request.session.username = username;
 				response.redirect('/index');
 			}
-		
-	
 			response.end();
 		});
 	} else {
@@ -63,20 +61,63 @@ app.post('/auth', function(request, response) {
 });
 
 app.post('/createCourse', function(request, response) {
+	console.log("creating course");
 	var lesson = request.body.lesson;
 	var location = request.body.location;
-	var rate = request.body.rate;
 	var date = request.body.date;
 	var duration = request.body.duration;
 
 	var VALUES = [null, lesson, date, location, duration];
-	var sql = "INSERT INTO course (course_id, courseName, schedule, location, duration) VALUES (?)";
-	if (username && email && fname && lname && (password === confirmpassword)) {
-	con.query(sql, [VALUES], function(error, result) {
+	var sql = "INSERT INTO course (COURSE_ID, COURSE_NAME, SCHEDULE, LOCATION, duration) VALUES (?)";
+	
+	if (lesson && location && date && duration){
+		con.query(sql, [VALUES], function(error, result) {
+		console.log(lesson + " added")
 		response.redirect('/index');
-	});
-	} else {
-		console.log("Please fill all fields correctly");
+		});
+	}else {
+	console.log("Please fill all fields correctly");
+	}
+});
+
+app.post('/createSession', function(request, response) {
+	console.log("creating session");
+	var lesson = request.body.lesson;
+	var location = request.body.location;
+	var date = request.body.date;
+	var duration = request.body.duration;
+
+	var VALUES = [null, lesson, date, location, duration];
+	var sql = "INSERT INTO booking (SESSION_ID, TOPIC, datetime, LOCATION, duration) VALUES (?)";
+	
+	if (lesson && location && date && duration){
+		con.query(sql, [VALUES], function(error, result) {
+		console.log(lesson + " added")
+		response.redirect('/index');
+		});
+	}else {
+	console.log("Please fill all fields correctly");
+	}
+});
+
+app.post('/createSeminar', function(request, response) {
+	console.log("creating course");
+	var lesson = request.body.lesson;
+	//var location = request.body.location;
+	var price = request.body.price;
+	var date = request.body.date;
+	var duration = request.body.duration;
+	
+	var VALUES = [null, lesson, price, location, duration];
+	var sql = "INSERT INTO seminar (SEMINAR_ID, TITLE, PRICE, VENUE_ID, datetime, duration) VALUES (?)";
+	
+	if (lesson && location && date && duration){
+		con.query(sql, [VALUES], function(error, result) {
+		console.log(lesson + " added")
+		response.redirect('/index');
+		});
+	}else {
+	console.log("Please fill all fields correctly");
 	}
 });
 
@@ -240,11 +281,11 @@ app.get('/create', function(request, response) {
 	response.sendFile(path.join(__dirname + '/create.html'));
 });
 
-app.get('/seminar', function(request, response) {
+app.get('/addSeminar', function(request, response) {
 	response.sendFile(path.join(__dirname + '/addSeminar.html'));
 });
 
-app.get('/session', function(request, response) {
+app.get('/addSession', function(request, response) {
 	response.sendFile(path.join(__dirname + '/addSession.html'));
 });
 
