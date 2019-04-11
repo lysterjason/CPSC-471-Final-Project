@@ -37,13 +37,16 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-		data.data.forEach(course => {
-         console.log(course.course_name);
-         $('#dataTable').append('<tr><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td></tr>');
+    const uniqueClasses = Array.from(new Set(data.data.map(a => a.course_id)))
+      .map(id => {
+        return data.data.find(a => a.course_id === id)
+      })
+		uniqueClasses.forEach(course => {
+         $('#dataTable').append('<tr><td>' + course.course_id + '</td><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td><td bgcolor="#FF0000" style="color: white;"><strong>Unenroll</strong></td></tr>');
         });
     },
 		error: function(request, status){
-			console.log("HELLO");
+			console.log("HELLO"); 
 			console.log(request);
 		}
   });
@@ -52,8 +55,12 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-		data.data.forEach(seminar => {
-         $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td></tr>');
+    const uniqueClasses = Array.from(new Set(data.data.map(a => a.seminar_id)))
+    .map(id => {
+      return data.data.find(a => a.seminar_id === id)
+    })
+		uniqueClasses.forEach(seminar => {
+         $('#dataTable2').append('<tr><td>' + seminar.seminar_id + '</td><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td bgcolor="#FF0000" style="color: white;"><strong>Unenroll</strong></td></tr>');
         });
     },
 		error: function(request, status){
@@ -66,8 +73,12 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-		data.data.forEach(session => {
-         $('#dataTable3').append('<tr><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td></tr>');
+    const uniqueClasses = Array.from(new Set(data.data.map(a => a.session_id)))
+    .map(id => {
+      return data.data.find(a => a.session_id === id)
+    })
+		uniqueClasses.forEach(session => {
+         $('#dataTable3').append('<tr><td>' + session.session_id + '</td><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td><td bgcolor="#FF0000" style="color: white;"><strong>Unenroll</strong></td></tr>');
         });
     },
 		error: function(request, status){
@@ -96,7 +107,14 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			$("#courseCt").html(data.data + " Courses");
+    console.log(data);
+    const uniqueClasses = Array.from(new Set(data.data.map(a => a.SERVICE_ID)))
+      .map(id => {
+        return data.data.find(a => a.SERVICE_ID === id)
+    })
+    const len = uniqueClasses.length
+    console.log(uniqueClasses)
+    $("#courseCt").html(len + " Courses");
 
 		},
 		error: function(request, status){
@@ -104,7 +122,37 @@ $(document).ready(() => {
 			console.log(request);
 		}
 	});
-	
+  
+  $("#dataTable").on("click", "td:last-child", function() {
+    var id = $(this).closest('tr').find('td:first-child').text();
+    console.log(id);
+    $.ajax({
+      url: 'http://localhost:3000/delete',
+      data: { sessionID: id },
+      type: 'POST',
+    });
+  });
+
+  $("#dataTable2").on("click", "td:last-child", function() {
+    var id = $(this).closest('tr').find('td:first-child').text();
+    console.log(id);
+    $.ajax({
+      url: 'http://localhost:3000/delete',
+      data: { sessionID: id },
+      type: 'POST',
+    });
+  });
+
+  $("#dataTable3").on("click", "td:last-child", function() {
+    var id = $(this).closest('tr').find('td:first-child').text();
+    console.log(id);
+    $.ajax({
+      url: 'http://localhost:3000/delete',
+      data: { sessionID: id },
+      type: 'POST',
+    });
+  });
+
 });
 
 </script>
@@ -264,18 +312,21 @@ $(document).ready(() => {
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Course ID</th>
                       <th>Tutor Name</th>
                       <th>Course Taught</th>
                       <th>Location</th>
                       <th>Rate (/hr)</th>
                       <th>Days</th>
                       <th>Duration</th>
+                      <th>Unenroll</th>
                     </tr>
                   </thead>
                 </table>
               </div>
             </div>
           </div>
+
           <a href="create" id = 'createCButton' class="btn btn-primary mb-4" role="button">Create Course</a>
 
           <div class="card shadow mb-4">
@@ -291,12 +342,14 @@ $(document).ready(() => {
                 <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Seminar ID</th>
                       <th>Held By</th>
                       <th>Seminar Topic</th>
                       <th>Location</th>
                       <th>Price</th>
                       <th>Date and Time</th>
                       <th>Duration</th>
+                      <th>Unenroll</th>
                     </tr>
                   </thead>
                 </table>
@@ -307,7 +360,7 @@ $(document).ready(() => {
 		  
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-primary">
 				<p id = 'bookings'>
 				Sessions you are Enrolled In:
 				</p>
@@ -318,12 +371,14 @@ $(document).ready(() => {
                 <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Session ID</th>
                       <th>Taught By</th>
                       <th>Topic Taught</th>
                       <th>Location</th>
                       <th>Price</th>
                       <th>Date and Time</th>
                       <th>Duration</th>
+                      <th>Unenroll</th>
                     </tr>
                   </thead>
                 </table>

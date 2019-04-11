@@ -15,8 +15,9 @@
         console.log('ajax success');
         console.log(data);
         data.data.forEach(course => {
+          console.log(course)
           console.log(course.course_name);
-          $('#dataTable').append('<tr><td>' + course.course_id + '</td><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td><td>Enroll</td></tr>');
+          $('#dataTable').append('<tr><td>' + course.course_id + '</td><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td><td bgcolor="#98FB98"><strong>Enroll</strong></td></tr>');
           });
       },
       error: function(request, status){
@@ -32,7 +33,7 @@
         console.log('ajax success');
         console.log(data);
         data.data.forEach(seminar => {
-          $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td>Enroll</td></tr>');
+          $('#dataTable2').append('<tr><td>' + seminar.seminar_id + '</td><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td bgcolor="#98FB98"><strong>Enroll</strong></td></tr>');
         });
       },
       error: function(request, status){
@@ -48,7 +49,7 @@
         console.log('ajax success');
         console.log(data);
         data.data.forEach(session => {
-          $('#dataTable3').append('<tr><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td><td>Enroll</td></tr>');
+          $('#dataTable3').append('<tr><td>' + session.session_id + '</td><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td><td bgcolor="#98FB98"><strong>Enroll</strong></td></tr>');
         });
       },
       error: function(request, status){
@@ -58,6 +59,26 @@
     });
     
     $("#dataTable").on("click", "td:last-child", function() {
+      var id = $(this).closest('tr').find('td:first-child').text();
+      console.log(id);
+      $.ajax({
+        url: 'http://localhost:3000/enroll',
+        data: { sessionID: id },
+        type: 'POST',
+      });
+    });
+
+    $("#dataTable2").on("click", "td:last-child", function() {
+      var id = $(this).closest('tr').find('td:first-child').text();
+      console.log(id);
+      $.ajax({
+        url: 'http://localhost:3000/enroll',
+        data: { sessionID: id },
+        type: 'POST',
+      });
+    });
+
+    $("#dataTable3").on("click", "td:last-child", function() {
       var id = $(this).closest('tr').find('td:first-child').text();
       console.log(id);
       $.ajax({
@@ -189,6 +210,7 @@
                 <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Seminar ID</th>
                       <th>Held By</th>
                       <th>Seminar Topic</th>
                       <th>Location</th>
@@ -210,6 +232,7 @@
                 <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Session ID</th>
                       <th>Taught By</th>
                       <th>Topic Taught</th>
                       <th>Location</th>

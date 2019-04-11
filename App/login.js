@@ -22,7 +22,6 @@ var con = mysql.createConnection({
   user: "jasonl",
 	password: "password",
 	database: "project",
-	
 });
 
 con.connect(function(err) {
@@ -44,20 +43,28 @@ app.post('/auth', function(request, response) {
 	if (username && password) {
 		con.query('SELECT * FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
-				console.log("USER INFO");
-				console.log(results);
 				userID = results[0].ID;
 				userType = results[0].TYPE;
-				console.log("USER TYPE ------------> " + userType);
 				request.session.loggedin = true;
 				request.session.username = username;
 				response.redirect('/index');
+			} else {
+				response.redirect('/goLogin');
 			}
-			response.end();
 		});
 	} else {
-		response.end();
+		response.redirect('/goLogin');
 	}
+});
+
+app.post('/delete', function(request, response) {
+	sessionID = parseInt(request.body.sessionID);
+	var VALUES = [userID, sessionID];
+	console.log(VALUES);
+  con.query('delete from enrolled WHERE CUSTOMER_ID = ? and SERVICE_ID = ?', [userID, sessionID], function (err, result) {
+    if (err) throw err;
+    console.log(result);
+	});
 });
 
 app.post('/createCourse', function(request, response) {
@@ -157,13 +164,43 @@ app.post('/enroll', function(request, response) {
 	});
 });
 
+app.post('/enrollSeminar', function(request, response) {
+	sessionID = parseInt(request.body.sessionID);
+	var VALUES = [null, userID, sessionID];
+  var sql = "INSERT INTO enrolled (ENROLMENT_ID, CUSTOMER_ID, SERVICE_ID) VALUES (?)";
+  con.query(sql, [VALUES], function (err, result) {
+    if (err) throw err;
+    console.log(result);
+	});
+});
+
+app.post('/enrollSession', function(request, response) {
+	sessionID = parseInt(request.body.sessionID);
+	var VALUES = [null, userID, sessionID];
+  var sql = "INSERT INTO enrolled (ENROLMENT_ID, CUSTOMER_ID, SERVICE_ID) VALUES (?)";
+  con.query(sql, [VALUES], function (err, result) {
+    if (err) throw err;
+    console.log(result);
+	});
+});
+
+app.post('/delete', function(request, response) {
+	sessionID = parseInt(request.body.sessionID);
+	var VALUES = [null, userID, sessionID];
+  var sql = "DELETE FROM ENROLLED WHERE CUSTOMER_ID = ? AND SERVICE_ID = ?";
+  con.query(sql, [VALUES], function (err, result) {
+    if (err) throw err;
+    console.log(result);
+	});
+});
+
 app.get('/countCurrent', function(req, res) {
 	var data;
-	con.query('SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = ?',[userID], function(error1, results1, fields1){
+	con.query('SELECT * FROM enrolled WHERE customer_id = ?',[userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}
-		data = results1[0].courseCount
+		data = results1
 		res.send({data})
 	});
 	
@@ -183,7 +220,7 @@ app.get('/getRating', function(req, res) {
 
 app.get('/getCurrentCourses', function(req, res) {
 	var data;
-	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) AS tutorName, c.course_name, c.location, t.rate_hr, c.schedule, c.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN course c ON c.course_id = s.service_id INNER JOIN enrolled e on e.service_id = s.service_id where e.customer_id = ?', [userID], function(error1, results1, fields1){
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) AS tutorName, c.course_name, c.location, c.course_id, t.rate_hr, c.schedule, c.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN course c ON c.course_id = s.service_id INNER JOIN enrolled e on e.service_id = s.service_id where e.customer_id = ?', [userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}	
@@ -194,7 +231,7 @@ app.get('/getCurrentCourses', function(req, res) {
 
 app.get('/getCurrentSeminars', function(req, res) {
 	var data;
-	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, sem.title, v.name, sem.price, sem.datetime, sem.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN seminar sem ON sem.seminar_id = s.service_id INNER JOIN venue v ON sem.venue_id = v.venue_id INNER JOIN enrolled e ON e.service_id = sem.seminar_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, sem.title, v.name, sem.price, sem.datetime, sem.seminar_id, sem.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN seminar sem ON sem.seminar_id = s.service_id INNER JOIN venue v ON sem.venue_id = v.venue_id INNER JOIN enrolled e ON e.service_id = sem.seminar_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}	
@@ -205,7 +242,7 @@ app.get('/getCurrentSeminars', function(req, res) {
 
 app.get('/getCurrentSession', function(req, res) {
 	var data;
-	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, b.topic, b.location, t.rate_hr, b.datetime, b.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN booking b ON b.session_id = s.service_id INNER JOIN enrolled e ON b.session_id = e.service_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, b.topic, b.location, b.session_id, t.rate_hr, b.datetime, b.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN booking b ON b.session_id = s.service_id INNER JOIN enrolled e ON b.session_id = e.service_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}	
@@ -227,7 +264,7 @@ app.get('/getAllCourses', function(req, res) {
 
 app.get('/getAllSeminars', function(req, res) {
 	var data;
-	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, sem.title, v.name, sem.price, sem.datetime, sem.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN seminar sem ON sem.seminar_id = s.service_id INNER JOIN venue v ON sem.venue_id = v.venue_id', function(error1, results1, fields1){
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, sem.title, v.name, sem.price, sem.datetime, sem.seminar_id, sem.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN seminar sem ON sem.seminar_id = s.service_id INNER JOIN venue v ON sem.venue_id = v.venue_id', function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}	
@@ -238,7 +275,7 @@ app.get('/getAllSeminars', function(req, res) {
 
 app.get('/getAllSessions', function(req, res) {
 	var data;
-	con.query('select concat(u.first_name, " ", u.last_name) as tutorName, b.topic, b.location, t.rate_hr, b.datetime, b.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN booking b ON b.session_id = s.service_id', function(error1, results1, fields1){
+	con.query('select concat(u.first_name, " ", u.last_name) as tutorName, b.topic, b.location, b.session_id, t.rate_hr, b.datetime, b.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN booking b ON b.session_id = s.service_id', function(error1, results1, fields1){
 		if (error1) {
 			console.log(error1);
 		}	
