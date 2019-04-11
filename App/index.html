@@ -22,19 +22,55 @@ $(document).ready(() => {
 			console.log("HELLO");
 			console.log(request);
 		}
-	});
+  });
+  $.ajax({
+		url: 'http://localhost:3000/getCurrentSeminars',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data){
+			console.log('ajax success');
+      console.log(data);
+      data.data.forEach(seminar => {
+         $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td></tr>');
+        });
+    },
+		error: function(request, status){
+			console.log("HELLO");
+			console.log(request);
+		}
+  });
+  $.ajax({
+		url: 'http://localhost:3000/getCurrentSession',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data){
+			console.log('ajax success');
+      console.log(data);
+      data.data.forEach(session => {
+         $('#dataTable3').append('<tr><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td></tr>');
+        });
+    },
+		error: function(request, status){
+			console.log("HELLO");
+			console.log(request);
+		}
+  });
 	$.ajax({
 		url: 'http://localhost:3000/getRating',
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('ajax success');
-			console.log(data.data[0]);
+			console.log('Current rating');
+			console.log(data.data);
+			var str = data.data.toString();
+			var rounded = str.substring(0,4);
+			$("#ratingVal").html(rounded + "/5");
 
 		},
 		error: function(request, status){
 			console.log("HELLO");
 			console.log(request);
+			
 		}
 	});
 	$.ajax({
@@ -42,7 +78,7 @@ $(document).ready(() => {
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
-			console.log('ajax success');
+			console.log('Current course count');
 			console.log(data.data);
 			$("#courseCt").html(data.data + " Courses");
 
@@ -57,9 +93,6 @@ $(document).ready(() => {
 });
 
 </script>
-
-
-
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -162,7 +195,7 @@ $(document).ready(() => {
           <!-- Content Row -->
           <div class="row">
 
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-6 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -179,26 +212,8 @@ $(document).ready(() => {
                 </div>
               </div>
             </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Number of Courses Taken:</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">
-						<p id = "ratingVal"></p>
-					  </div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
+			
+            <div class="col-xl-6 col-md-6 mb-4">
               <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
@@ -206,7 +221,7 @@ $(document).ready(() => {
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Your Rating:</div>
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">X/5</div>
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><p id = "ratingVal"></p></div>
                         </div>
                       </div>
                     </div>
@@ -218,27 +233,13 @@ $(document).ready(() => {
               </div>
             </div>
 
-            <!-- Pending Requests Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Favorite Tutor:</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">Name Here</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-user fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- DataTales Example -->
+        </div>
+        <!-- /.container-fluid -->
+		
+		<!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Currently Enrolled In</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Courses you are Enrolled In:</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -257,10 +258,48 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
-
-        </div>
-        <!-- /.container-fluid -->
-
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Seminars you are Enrolled In:</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Held By</th>
+                      <th>Seminar Topic</th>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Date and Time</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Sessions you are Enrolled In:</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Taught By</th>
+                      <th>Topic Taught</th>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Date and Time</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
       </div>
       <!-- End of Main Content -->
 

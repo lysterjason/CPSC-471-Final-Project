@@ -97,6 +97,21 @@ app.get('/countCurrent', function(req, res) {
 	
 });
 
+app.get('/getRating', function(req, res) {
+	var data;
+	con.query('SELECT AVG(rating_val) AS avgRating from rating where id = ?;',[userID], function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}
+		console.log("AVG RATING VVVVVV");
+		console.log(results1[0].avgRating);
+		data = results1[0].avgRating;
+		res.send({data})
+	});
+	
+});
+
 app.get('/getCurrentCourses', function(req, res) {
 	var data;
 	console.log(userID);
@@ -107,7 +122,37 @@ app.get('/getCurrentCourses', function(req, res) {
 		}	
 		console.log(results1);
 		data = results1;
-		console.log(data);
+		//console.log(data);
+		res.send({data})
+	});
+});
+
+app.get('/getCurrentSeminars', function(req, res) {
+	var data;
+	console.log(userID);
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, sem.title, v.name, sem.price, sem.datetime, sem.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN seminar sem ON sem.seminar_id = s.service_id INNER JOIN venue v ON sem.venue_id = v.venue_id INNER JOIN enrolled e ON e.service_id = sem.seminar_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}	
+		console.log(results1);
+		data = results1;
+		//console.log(data);
+		res.send({data})
+	});
+});
+
+app.get('/getCurrentSession', function(req, res) {
+	var data;
+	console.log(userID);
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name) as tutorName, b.topic, b.location, t.rate_hr, b.datetime, b.duration FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN booking b ON b.session_id = s.service_id INNER JOIN enrolled e ON b.session_id = e.service_id WHERE e.customer_id = ?', [userID], function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}	
+		console.log(results1);
+		data = results1;
+		//console.log(data);
 		res.send({data})
 	});
 });
