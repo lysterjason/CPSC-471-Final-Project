@@ -20,6 +20,11 @@ $(document).ready(() => {
 				$("#enrolledCourses").html("Courses you are currently teaching");
 				$("#bookings").html("Sessions you are currently booked for");
 				$("#seminars").html("Seminars you are holding");
+			}else{
+				console.log("I am a student");
+				$("#createCButton").remove();
+				$("#createSButton").remove();
+				$("#createSEButton").remove();
 			}
     },
 		error: function(request, status){
@@ -282,7 +287,7 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
-          <a href="create" class="btn btn-primary mb-4" role="button">Create Course</a>
+          <a href="create" id = 'createCButton' class="btn btn-primary mb-4" role="button">Create Course</a>
 
           <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -309,6 +314,8 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
+		  <a href="seminar" id = 'createSButton' class="btn btn-primary mb-4" role="button">Create Seminar</a>
+		  
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">
@@ -334,6 +341,7 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
+		  <a href="session" id = 'createSEButton' class="btn btn-primary mb-4" role="button">Create Session</a>
       </div>
       <!-- End of Main Content -->
 

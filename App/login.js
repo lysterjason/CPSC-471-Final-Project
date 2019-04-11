@@ -62,15 +62,15 @@ app.post('/auth', function(request, response) {
 	}
 });
 
-app.post('/register', function(request, response) {
+app.post('/createCourse', function(request, response) {
 	var lesson = request.body.lesson;
 	var location = request.body.location;
 	var rate = request.body.rate;
 	var date = request.body.date;
 	var duration = request.body.duration;
 
-	var VALUES = [null, username, password, null, fname, lname, null, email, null];
-	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES (?)";
+	var VALUES = [null, lesson, date, location, duration];
+	var sql = "INSERT INTO course (course_id, courseName, schedule, location, duration) VALUES (?)";
 	if (username && email && fname && lname && (password === confirmpassword)) {
 	con.query(sql, [VALUES], function(error, result) {
 		response.redirect('/index');
@@ -80,7 +80,7 @@ app.post('/register', function(request, response) {
 	}
 });
 
-app.post('/createCourse', function(request, response) {
+app.post('/register', function(request, response) {
 	var username = request.body.username;
 	var email = request.body.email;
 	var fname = request.body.firstName;
@@ -231,6 +231,14 @@ app.get('/logout', function(request, response) {
 
 app.get('/create', function(request, response) {
 	response.sendFile(path.join(__dirname + '/create.html'));
+});
+
+app.get('/seminar', function(request, response) {
+	response.sendFile(path.join(__dirname + '/addSeminar.html'));
+});
+
+app.get('/session', function(request, response) {
+	response.sendFile(path.join(__dirname + '/addSession.html'));
 });
 
 
