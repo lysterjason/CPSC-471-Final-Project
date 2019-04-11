@@ -2,7 +2,74 @@
 <html lang="en">
 
 <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type = "text/javascript">
 
+  $(document).ready(() => {
+
+    $.ajax({
+      url: 'http://localhost:3000/getAllCourses',
+      type: 'GET',
+      dataType: 'json',
+      success: function(data){
+        console.log('ajax success');
+        console.log(data);
+        data.data.forEach(course => {
+          console.log(course.course_name);
+          $('#dataTable').append('<tr><td>' + course.course_id + '</td><td>' + course.tutorName + '</td><td>' + course.course_name + '</td><td>' + course.location + '</td><td>' + course.rate_hr + '</td><td>' + course.schedule + '</td><td>' + course.duration + '</td><td>Enroll</td></tr>');
+          });
+      },
+      error: function(request, status){
+        console.log("HELLO");
+        console.log(request);
+      }
+    });
+    $.ajax({
+      url: 'http://localhost:3000/getAllSeminars',
+      type: 'GET',
+      dataType: 'json',
+      success: function(data){
+        console.log('ajax success');
+        console.log(data);
+        data.data.forEach(seminar => {
+          $('#dataTable2').append('<tr><td>' + seminar.tutorName + '</td><td>' + seminar.tutorName + '</td><td>' + seminar.title + '</td><td>' + seminar.name + '</td><td>' + seminar.price + '</td><td>' + seminar.datetime + '</td><td>' + seminar.duration + '</td><td>Enroll</td></tr>');
+        });
+      },
+      error: function(request, status){
+        console.log("HELLO");
+        console.log(request);
+      }
+    });
+    $.ajax({
+      url: 'http://localhost:3000/getAllSessions',
+      type: 'GET',
+      dataType: 'json',
+      success: function(data){
+        console.log('ajax success');
+        console.log(data);
+        data.data.forEach(session => {
+          $('#dataTable3').append('<tr><td>' + session.tutorName + '</td><td>' + session.topic + '</td><td>' + session.location + '</td><td>' + session.rate_hr + '</td><td>' + session.datetime + '</td><td>' + session.duration + '</td><td>Enroll</td></tr>');
+        });
+      },
+      error: function(request, status){
+        console.log("HELLO");
+        console.log(request);
+      }
+    });
+    
+    $("#dataTable").on("click", "td:last-child", function() {
+      var id = $(this).closest('tr').find('td:first-child').text();
+      console.log(id);
+      $.ajax({
+        url: 'http://localhost:3000/enroll',
+        data: { sessionID: id },
+        type: 'POST',
+      });
+    });
+
+});
+
+</script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,7 +87,6 @@
 
   <!-- Custom styles for this page -->
   <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
@@ -32,7 +98,7 @@
    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
       <div class="sidebar-brand-icon">
         <i class="fas fa-school"></i>
       </div>
@@ -66,13 +132,6 @@
 
     <!-- Nav Item - Tables -->
     <li class="nav-item">
-      <a class="nav-link" href="previous">
-        <i class="fas fa-fw fa-table"></i>
-        <span>Previous Courses</span></a>
-    </li>
-
-    <!-- Nav Item - Tables -->
-    <li class="nav-item">
       <a class="nav-link" href="/">
         <i class="fas fa-fw fa-sign-out-alt"></i>
         <span>Logout</span></a>
@@ -97,7 +156,7 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
+          
           <!-- Page Heading -->
           <h1 class="h3 mb-2 text-gray-800">Available Courses</h1>
 
@@ -108,68 +167,62 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Course ID</th>
                       <th>Tutor Name</th>
                       <th>Course Taught</th>
                       <th>Location</th>
                       <th>Rate (/hr)</th>
                       <th>Date</th>
-                      <th>Details</th>
+                      <th>Duration</th>
+                      <th>Enroll</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$61</td>
-                      <td>2011/04/25</td>
-                      <td><button class="btn-xs btn-primary" style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$63</td>
-                      <td>2011/07/25</td>
-                      <td><button class="btn-xs btn-primary"  style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$66</td>
-                      <td>2009/01/12</td>
-                      <td><button class="btn-xs btn-primary" style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$22</td>
-                      <td>2012/03/29</td>
-                      <td><button class="btn-xs btn-primary" style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$33</td>
-                      <td>2008/11/28</td>
-                      <td><button class="btn-xs btn-primary" style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Example Name</td>
-                      <td>CPSC 471</td>
-                      <td>Calgary</td>
-                      <td>$61</td>
-                      <td>2012/12/02</td>
-                      <td><button class="btn-xs btn-primary" style='width:100%; height:100%; display: inline-block' type="button" data-toggle="modal" data-target="#exampleModalCenter">Details</button></td>
-                    </tr>
-                  </tbody>
                 </table>
               </div>
             </div>
           </div>
+          
+          <h1 class="h3 mb-2 text-gray-800">Available Seminars</h1>
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Held By</th>
+                      <th>Seminar Topic</th>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Date and Time</th>
+                      <th>Duration</th>
+                      <th>Enroll</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <h1 class="h3 mb-2 text-gray-800">Available Sessions</h1>
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Taught By</th>
+                      <th>Topic Taught</th>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Date and Time</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+
 
         </div>
         <!-- /.container-fluid -->
