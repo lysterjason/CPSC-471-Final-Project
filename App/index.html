@@ -16,7 +16,7 @@ $(document).ready(() => {
 			if(data.data === 'T'){
 				console.log("I am a tutor");
 				$("#currentlyDoing").html("Currently teaching: ");
-				$("#coursesTab").html("Manage courses");
+        $("#coursesTab").html("Manage courses");
 				$("#enrolledCourses").html("Courses you are currently teaching");
 				$("#bookings").html("Sessions you are currently booked for");
 				$("#seminars").html("Seminars you are holding");
@@ -110,7 +110,6 @@ $(document).ready(() => {
 			console.log(request);
 		}
 	});
-	
 	
 });
 
@@ -275,7 +274,7 @@ $(document).ready(() => {
                       <th>Course Taught</th>
                       <th>Location</th>
                       <th>Rate (/hr)</th>
-                      <th>Date</th>
+                      <th>Days</th>
                       <th>Duration</th>
                     </tr>
                   </thead>
@@ -283,6 +282,8 @@ $(document).ready(() => {
               </div>
             </div>
           </div>
+          <a href="create" class="btn btn-primary mb-4" role="button">Create Course</a>
+
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">

@@ -63,6 +63,24 @@ app.post('/auth', function(request, response) {
 });
 
 app.post('/register', function(request, response) {
+	var lesson = request.body.lesson;
+	var location = request.body.location;
+	var rate = request.body.rate;
+	var date = request.body.date;
+	var duration = request.body.duration;
+
+	var VALUES = [null, username, password, null, fname, lname, null, email, null];
+	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES (?)";
+	if (username && email && fname && lname && (password === confirmpassword)) {
+	con.query(sql, [VALUES], function(error, result) {
+		response.redirect('/index');
+	});
+	} else {
+		console.log("Please fill all fields correctly");
+	}
+});
+
+app.post('/createCourse', function(request, response) {
 	var username = request.body.username;
 	var email = request.body.email;
 	var fname = request.body.firstName;
@@ -210,6 +228,11 @@ app.get('/previous', function(request, response) {
 app.get('/logout', function(request, response) {
 	response.sendFile(path.join(__dirname + '/'));
 });
+
+app.get('/create', function(request, response) {
+	response.sendFile(path.join(__dirname + '/create.html'));
+});
+
 
 app.listen(3000, function() {
 	console.log('Server is running on port 3000...');
