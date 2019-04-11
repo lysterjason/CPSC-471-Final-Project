@@ -6,6 +6,7 @@ var path = require('path');
 var app = express();
 var userID;
 var userType;
+var sid;
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, "./public/")));
@@ -66,8 +67,25 @@ app.post('/createCourse', function(request, response) {
 	var location = request.body.location;
 	var date = request.body.date;
 	var duration = request.body.duration;
-
-	var VALUES = [null, lesson, date, location, duration];
+	//Generate new course ID
+	var VALUES1 = [null, userID];
+	var sql1 = "INSERT INTO services (SERVICE_ID, tutor_id) VALUES (?)";
+	con.query(sql1, [VALUES1], function(error, result) {
+		console.log("ID generated")
+		});
+	var sql2 = "select service_id from services group by service_id order by service_id desc limit 1;";
+	con.query(sql2, function(error1, results1, fields1){
+		if (error1) {
+			console.log(error1);
+		}
+		else{
+		sid = results1[0].service_id;
+		console.log(sid);
+		}
+		
+	});
+	
+	var VALUES = [sid,lesson, date, location, duration];
 	var sql = "INSERT INTO course (COURSE_ID, COURSE_NAME, SCHEDULE, LOCATION, duration) VALUES (?)";
 	
 	if (lesson && location && date && duration){
