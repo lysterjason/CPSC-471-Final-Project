@@ -4,6 +4,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
+var userID;
 
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, "./public/")));
@@ -40,9 +41,11 @@ app.post('/auth', function(request, response) {
 	var password = request.body.password;
 
 	if (username && password) {
-		con.query('SELECT * FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
+		con.query('SELECT ID FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
-				console.log(results)
+				console.log("USER INFO");
+				console.log(results[0].ID);
+				userID = results[0].ID;
 				request.session.loggedin = true;
 				request.session.username = username;
 				response.redirect('/index');
@@ -80,22 +83,49 @@ app.post('/register', function(err) {
   });
 });
 
-
 app.get('/countCurrent', function(req, res) {
-	console.log("HI PARKER");
 	var data;
-	con.query("SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = 10003", function(error1, results1, fields1){
+	con.query('SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = ?',[userID], function(error1, results1, fields1){
 		if (error1) {
 			console.log("THERE IS AN ERROR");
 			console.log(error1);
 		}
-		console.log("HI DANNY");
-		console.log(results1[0].courseCount);
 		data = results1[0].courseCount
 		console.log(data);
 		res.send({data})
 	});
 	
+});
+
+app.get('/getRating', function(req, res) {
+	var data;
+	con.query('SELECT AVG(rating_val) AS avgRating from rating where id = ?;',[userID], function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}
+		console.log("AVG RATING VVVVVV");
+		console.log(results1[0]);
+		data = results1([0]);
+		res.send({data})
+	});
+	
+});
+
+app.get('/getCurrentCourses', function(req, res) {
+	var data;
+	console.log(userID);
+	con.query('SELECT CONCAT(u.first_name, " ", u.last_name), c.course_name, c.location, t.rate_hr, c.schedule FROM user u INNER JOIN tutor t ON t.id = u.id INNER JOIN services s ON s.tutor_id = t.id INNER JOIN course c ON c.course_id = s.service_id INNER JOIN enrolled e on e.service_id = s.service_id where e.customer_id = ?', [userID], function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}
+		console.log("HI DANNY");
+		console.log(results1);
+		data = results1;
+		console.log(data);
+		res.send({data})
+	});
 });
 
 app.get('/goLogin', function(request, response) {

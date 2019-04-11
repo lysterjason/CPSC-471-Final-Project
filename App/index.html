@@ -5,8 +5,35 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type = "text/javascript">
 
-console.log('script starting');
 $(document).ready(() => {
+	$.ajax({
+		url: 'http://localhost:3000/getCurrentCourses',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data){
+			console.log('ajax success');
+			console.log(data);
+			$("#ratingVal").html(data.data + " Courses");
+		},
+		error: function(request, status){
+			console.log("HELLO");
+			console.log(request);
+		}
+	});
+	$.ajax({
+		url: 'http://localhost:3000/getRating',
+		type: 'GET',
+		dataType: 'json',
+		success: function(data){
+			console.log('ajax success');
+			console.log(data.data[0]);
+
+		},
+		error: function(request, status){
+			console.log("HELLO");
+			console.log(request);
+		}
+	});
 	$.ajax({
 		url: 'http://localhost:3000/countCurrent',
 		type: 'GET',
@@ -22,8 +49,9 @@ $(document).ready(() => {
 			console.log(request);
 		}
 	});
+	
+	
 });
-console.log('script finished');
 
 </script>
 
@@ -155,7 +183,9 @@ console.log('script finished');
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Number of Courses Taken:</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">X Courses</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">
+						<p id = "ratingVal"></p>
+					  </div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
@@ -296,15 +326,6 @@ console.log('script finished');
   <!-- Core plugin JavaScript-->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
-
-  <!-- Page level plugins -->
-  <script src="vendor/chart.js/Chart.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
 
 </body>
 
