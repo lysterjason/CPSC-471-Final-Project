@@ -4,10 +4,9 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
-let io = require('socket.io')(http);
 
 app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "./public/")));
 app.use(session({
 	secret: 'secret',
 	resave: true,
@@ -17,22 +16,19 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 var con = mysql.createConnection({
-  host: "10.13.163.141",
+  host: "10.13.170.110",
   user: "jasonl",
 	password: "password",
-	database: "project"
+	database: "project",
+	
 });
 
 con.connect(function(err) {
   if (err) throw err;
   con.query("SELECT * FROM user", function (err, result, fields) {
     if (err) throw err;
-		console.log(result);
+		
   });
-});
-
-app.post('/test', function(request, response) {
-	console.log("test")
 });
 
 app.get('/', function(request, response) {
@@ -45,21 +41,22 @@ app.post('/auth', function(request, response) {
 
 	if (username && password) {
 		con.query('SELECT * FROM user WHERE USERNAME = ? AND PASSWORD = ?', [username, password], function(error, results, fields) {
-		if (results.length > 0) {
-			console.log(results)
-			request.session.loggedin = true;
-			request.session.username = username;
-			response.redirect('/goHome');
-		}
-		con.query("SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = ?", [results[0].ID], function(error1, results1, fields1){
-			console.log(results1[0].courseCount)
-			});
+			if (results.length > 0) {
+				console.log(results)
+				request.session.loggedin = true;
+				request.session.username = username;
+				response.redirect('/index');
+			}
+		
+	
+			response.end();
 		});
+	} else {
+		response.end();
 	}
 });
-			
 
-app.post('/register', function(request, response) {
+app.post('/test', function(request, response) {
 	var username = request.body.username;
 	var email = request.body.email;
 	var fname = request.body.firstName;
@@ -67,27 +64,62 @@ app.post('/register', function(request, response) {
 	var password = request.body.password;
 	var confirmpassword = request.body.confirmpassword;
 
-	var VALUES = [null, username, password, null, fname, lname, null, email, null];
-	var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES (?)";
-	if (username && email && fname && lname && (password === confirmpassword)) {
-	con.query(sql, [VALUES], function(error, result) {
-		response.redirect('/goLogin');
+	var VALUES = [null, username, password, Date.now(), fname, lname, null, email, null];
+	var sql = "INSERT INTO customers (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID) VALUES ('99999', 'TESTUSER', 'password', '2019-04-09T19:46:08.000Z', 'TESTUSER', 'TESTUSER', '1996-01-01T07:00:00.000Z', 'test@gmail.com, '9999')";
+	con.query(sql, function(error, result) {
+		console.log(result);
 	});
-	} else {
-		console.log("Please fill all fields correctly");
-	}
+});
+
+app.post('/register', function(err) {
+  if (err) throw err;
+  var sql = "INSERT INTO user (ID, USERNAME, PASSWORD, CREATED_AT, FIRST_NAME, LAST_NAME, DOB, EMAIL, SCHOOL_ID, TYPE) VALUES ('99999', 'TESTUSER', 'password', '2019-04-09T19:46:08.000Z', 'TESTUSER', 'TESTUSER', '1996-01-01T07:00:00.000Z', 'test@gmail.com, '9999', 'T')";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+});
+
+
+app.get('/countCurrent', function(req, res) {
+	console.log("HI PARKER");
+	var data;
+	con.query("SELECT COUNT(*) AS courseCount FROM enrolled WHERE customer_id = 10003", function(error1, results1, fields1){
+		if (error1) {
+			console.log("THERE IS AN ERROR");
+			console.log(error1);
+		}
+		console.log("HI DANNY");
+		console.log(results1[0].courseCount);
+		data = results1[0].courseCount
+		console.log(data);
+		res.send({data})
+	});
+	
 });
 
 app.get('/goLogin', function(request, response) {
 	response.sendFile(path.join(__dirname + '/login.html'));
 });
 
-app.get('/goHome', function(request, response) {
+app.get('/index', function(request, response) {
 	response.sendFile(path.join(__dirname + '/index.html'));
 });
 
 app.get('/register', function(request, response) {
 	response.sendFile(path.join(__dirname + '/register.html'));
+});
+
+app.get('/available', function(request, response) {
+	response.sendFile(path.join(__dirname + '/available.html'));
+});
+
+app.get('/previous', function(request, response) {
+	response.sendFile(path.join(__dirname + '/previous.html'));
+});
+
+app.get('/logout', function(request, response) {
+	response.sendFile(path.join(__dirname + '/'));
 });
 
 app.listen(3000, function() {
